@@ -7,10 +7,11 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
-public class SudokuGUISwing2 
+public class SudokuGUI
 {
 	static Sudoku sudoku;
 	
@@ -132,6 +133,6 @@ public class SudokuGUISwing2
 				GUI();
 			}
 		};
-		javax.swing.SwingUtilities.invokeLater(Sudoku);
+		SwingUtilities.invokeLater(Sudoku);
 	}
 }

@@ -55,10 +55,7 @@ public class Sudoku implements ActionListener {
 		 * @return: if the position is on the board
 		 */
 		private boolean onBoard(int r,int c) {
-		   if(r >= 0 && r < boardSize && c >= 0 && c < boardSize) {
-		      return true;
-		   }
-		   return false;
+		   return (r >= 0 && r < boardSize && c >= 0 && c < boardSize);
 		}
 		
 		/**
@@ -309,7 +306,7 @@ public class Sudoku implements ActionListener {
 			
 			//need to fix this so that no repeats
 			
-			int randomNumberOfStartingSpotsDone = randomGenerator.nextInt(10) + 5;
+			int randomNumberOfStartingSpotsDone = randomGenerator.nextInt(10) + 30;
 			boolean validSpot = false;
 			for(int e = 0;e < randomNumberOfStartingSpotsDone;e++) {
 				while(!validSpot)

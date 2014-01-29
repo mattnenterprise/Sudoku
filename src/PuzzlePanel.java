@@ -32,7 +32,6 @@ public class PuzzlePanel extends JPanel implements Runnable {
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		
-		
 		 Graphics2D g2d = (Graphics2D) g;
 		 
 		 g2d.setColor(new Color(1.0f,1.0f,1.0f));
