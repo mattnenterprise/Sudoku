@@ -49,10 +49,14 @@ public class SudokuPanel extends JPanel {
 			g2d.setStroke(new BasicStroke(1));
 			g2d.drawLine(x, 0, x, this.getHeight());
 		}
-		for(int y = 0;y <= this.getWidth();y+=slotHeight) {
+		//this will draw the right most line
+		g2d.drawLine(this.getWidth() - 1, 0, this.getWidth() - 1, this.getHeight());
+		for(int y = 0;y <= this.getHeight();y+=slotHeight) {
 			g2d.setStroke(new BasicStroke(1));
 			g2d.drawLine(0, y, this.getWidth(), y);
 		}
+		//this will draw the bottom line
+		g2d.drawLine(0, this.getHeight() - 1, this.getWidth(), this.getHeight() - 1);
 		
 		Font f = new Font("Times New Roman", Font.PLAIN, 26);
 		g2d.setFont(f);
