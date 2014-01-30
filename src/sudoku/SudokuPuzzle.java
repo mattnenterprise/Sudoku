@@ -40,7 +40,7 @@ public class SudokuPuzzle {
 	}
 	
 	public void makeMove(int row,int col,String value) {
-		if(inRange(row,col) && isValidValue(value) && isValidMove(row,col,value)) {
+		if(isValidValue(value) && isValidMove(row,col,value)) {
 			board[row][col] = value; 
 		}
 	}
