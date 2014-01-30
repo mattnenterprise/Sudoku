@@ -24,13 +24,13 @@ public class SudokuFrame extends JFrame {
 		JPanel buttonSelectionPanel = new JPanel();
 		buttonSelectionPanel.setPreferredSize(new Dimension(75,500));
 		
-		SudokuPanel sPanel = new SudokuPanel();
-		
 		String [] numbers = {"1","2","3","4","5","6","7","8","9"};
+		SudokuPanel sPanel = new SudokuPanel(new SudokuPuzzle(9,9,3,3,numbers));
+		
 		for(String num : numbers) {
 			JButton b = new JButton(num);
 			b.setPreferredSize(new Dimension(40,40));
-			b.addActionListener(new NumActionListener(sPanel));
+			b.addActionListener(sPanel.new NumActionListener());
 			buttonSelectionPanel.add(b);
 		}
 		

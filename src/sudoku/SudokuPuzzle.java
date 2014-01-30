@@ -2,12 +2,20 @@ package sudoku;
 
 public class SudokuPuzzle {
 
-	private int [][] board;
-	private final int ROWS = 9;
-	private final int COLUMNS = 9;
+	protected String [][] board;
+	private final int ROWS;
+	private final int COLUMNS;
+	private final int BOXWIDTH;
+	private final int BOXHEIGHT;
+	private final String [] VALIDVALUES;
 	
-	public SudokuPuzzle() {
-		board = new int[ROWS][COLUMNS];
+	public SudokuPuzzle(int rows,int columns,int boxWidth,int boxHeight,String [] validValues) {
+		this.ROWS = rows;
+		this.COLUMNS = columns;
+		this.BOXWIDTH = boxWidth;
+		this.BOXHEIGHT = boxHeight;
+		this.VALIDVALUES = validValues;
+		board = new String [ROWS][COLUMNS];
 		initializeBoard();
 	}
 	
@@ -19,25 +27,25 @@ public class SudokuPuzzle {
 		return COLUMNS;
 	}
 	
-	public void makeMove(int row,int col,int num) {
-		if(inRange(row,col) && isValidMove(row,col,num)) {
-			board[row][col] = num; 
+	public void makeMove(int row,int col,String value) {
+		if(inRange(row,col) && isValidValue(value) && isValidMove(row,col,value)) {
+			board[row][col] = value; 
 		}
 	}
 	
-	public boolean isValidMove(int row,int col,int num) {
+	public boolean isValidMove(int row,int col,String value) {
 		if(inRange(row,col)) {
-			if(!numInCol(col,num) && !numInRow(row,num)) {
+			if(!numInCol(col,value) && !numInRow(row,value) && !numInBox(row,col,value)) {
 				return true;
 			}
 		}
 		return false;
 	}
 	
-	public boolean numInCol(int col,int num) {
+	public boolean numInCol(int col,String num) {
 		if(col <= COLUMNS) {
 			for(int row=0;row < ROWS;row++) {
-				if(board[row][col] == num) {
+				if(board[row][col].equals(num)) {
 					return true;
 				}
 			}
@@ -45,11 +53,30 @@ public class SudokuPuzzle {
 		return false;
 	}
 	
-	public boolean numInRow(int row,int num) {
+	public boolean numInRow(int row,String num) {
 		if(row <= ROWS) {
 			for(int col=0;col < COLUMNS;col++) {
-				if(board[row][col] == num) {
+				if(board[row][col].equals(num)) {
 					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
+	public boolean numInBox(int row,int col,String num) {
+		if(inRange(row, col)) {
+			int boxRow = row / BOXHEIGHT;
+			int boxCol = col / BOXWIDTH;
+			
+			int startingRow = (boxRow*BOXHEIGHT);
+			int startingCol = (boxCol*BOXWIDTH);
+			
+			for(int r = startingRow;r <= (startingRow+BOXHEIGHT)-1;r++) {
+				for(int c = startingCol;c <= (startingCol+BOXWIDTH)-1;c++) {
+					if(board[r][c].equals(num)) {
+						return true;
+					}
 				}
 			}
 		}
@@ -57,14 +84,21 @@ public class SudokuPuzzle {
 	}
 	
 	public boolean isSlotEmpty(int row,int col) {
-		 return (inRange(row,col) && board[row][col] == 0);
+		 return (inRange(row,col) && board[row][col].equals("0"));
 	}
 	
-	public int getValue(int row,int col) {
+	public String getValue(int row,int col) {
 		if(inRange(row,col)) {
 			return board[row][col];
 		}
-		return -1;
+		return "";
+	}
+	
+	private boolean isValidValue(String value) {
+		for(String str : VALIDVALUES) {
+			if(str.equals(value)) return true;
+		}
+		return false;
 	}
 	
 	private boolean inRange(int row,int col) {
@@ -86,7 +120,7 @@ public class SudokuPuzzle {
 	private void initializeBoard() {
 		for(int row = 0;row < ROWS;row++) {
 			for(int col = 0;col < COLUMNS;col++) {
-				board[row][col] = 0;
+				board[row][col] = "0";
 			}
 		}
 	}

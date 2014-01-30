@@ -6,9 +6,12 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.font.FontRenderContext;
 
+import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.event.MouseInputAdapter;
 
@@ -19,19 +22,12 @@ public class SudokuPanel extends JPanel {
 	private int currentlySelectedCol;
 	private int currentlySelectedRow;
 	
-	public SudokuPanel() {
+	public SudokuPanel(SudokuPuzzle puzzle) {
 		this.setPreferredSize(new Dimension(540,450));
 		this.addMouseListener(new SudokuPanelMouseAdapter());
-		puzzle = new SudokuPuzzle();
+		this.puzzle = puzzle;
 		currentlySelectedCol = -1;
 		currentlySelectedRow = -1;
-	}
-	
-	public void messageFromNumActionListener(Integer buttonNumber) {
-		if(currentlySelectedCol != -1 && currentlySelectedRow != -1) {
-			puzzle.makeMove(currentlySelectedRow, currentlySelectedCol, buttonNumber);
-			repaint();
-		}
 	}
 	
 	@Override
@@ -64,9 +60,9 @@ public class SudokuPanel extends JPanel {
 		for(int row=0;row < puzzle.getNumRows();row++) {
 			for(int col=0;col < puzzle.getNumColumns();col++) {
 				if(!puzzle.isSlotEmpty(row, col)) {
-					int textWidth = (int) f.getStringBounds(Integer.toString(puzzle.getValue(row, col)), fContext).getWidth();
-					int textHeight = (int) f.getStringBounds(Integer.toString(puzzle.getValue(row, col)), fContext).getHeight();
-					g2d.drawString(Integer.toString(puzzle.getValue(row, col)), (col*slotWidth)+((slotWidth/2)-(textWidth/2)), (row*slotHeight)+((slotHeight/2)+(textHeight/2)));
+					int textWidth = (int) f.getStringBounds(puzzle.getValue(row, col), fContext).getWidth();
+					int textHeight = (int) f.getStringBounds(puzzle.getValue(row, col), fContext).getHeight();
+					g2d.drawString(puzzle.getValue(row, col), (col*slotWidth)+((slotWidth/2)-(textWidth/2)), (row*slotHeight)+((slotHeight/2)+(textHeight/2)));
 				}
 			}
 		}
@@ -74,7 +70,20 @@ public class SudokuPanel extends JPanel {
 			g2d.setColor(new Color(0.0f,0.0f,1.0f,0.3f));
 			g2d.fillRect(currentlySelectedCol * slotWidth,currentlySelectedRow * slotHeight,slotWidth,slotHeight);
 		}
-		
+	}
+	
+	public void messageFromNumActionListener(String buttonValue) {
+		if(currentlySelectedCol != -1 && currentlySelectedRow != -1) {
+			puzzle.makeMove(currentlySelectedRow, currentlySelectedCol, buttonValue);
+			repaint();
+		}
+	}
+	
+	public class NumActionListener implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			messageFromNumActionListener(((JButton) e.getSource()).getText());	
+		}
 	}
 	
 	private class SudokuPanelMouseAdapter extends MouseInputAdapter {
