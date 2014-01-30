@@ -19,6 +19,20 @@ public class SudokuPuzzle {
 		initializeBoard();
 	}
 	
+	public SudokuPuzzle(SudokuPuzzle puzzle) {
+		this.ROWS = puzzle.ROWS;
+		this.COLUMNS = puzzle.COLUMNS;
+		this.BOXWIDTH = puzzle.BOXWIDTH;
+		this.BOXHEIGHT = puzzle.BOXHEIGHT;
+		this.VALIDVALUES = puzzle.VALIDVALUES;
+		board = new String [ROWS][COLUMNS];
+		for(int r = 0;r < ROWS;r++) {
+			for(int c = 0;c < COLUMNS;c++) {
+				board[r][c] = puzzle.board[r][c];
+			}
+		}
+	}
+	
 	public int getNumRows() {
 		return ROWS;
 	}
@@ -54,10 +68,10 @@ public class SudokuPuzzle {
 		return false;
 	}
 	
-	public boolean numInCol(int col,String num) {
+	public boolean numInCol(int col,String value) {
 		if(col <= COLUMNS) {
 			for(int row=0;row < ROWS;row++) {
-				if(board[row][col].equals(num)) {
+				if(board[row][col].equals(value)) {
 					return true;
 				}
 			}
@@ -65,10 +79,10 @@ public class SudokuPuzzle {
 		return false;
 	}
 	
-	public boolean numInRow(int row,String num) {
+	public boolean numInRow(int row,String value) {
 		if(row <= ROWS) {
 			for(int col=0;col < COLUMNS;col++) {
-				if(board[row][col].equals(num)) {
+				if(board[row][col].equals(value)) {
 					return true;
 				}
 			}
@@ -76,7 +90,7 @@ public class SudokuPuzzle {
 		return false;
 	}
 	
-	public boolean numInBox(int row,int col,String num) {
+	public boolean numInBox(int row,int col,String value) {
 		if(inRange(row, col)) {
 			int boxRow = row / BOXHEIGHT;
 			int boxCol = col / BOXWIDTH;
@@ -86,7 +100,7 @@ public class SudokuPuzzle {
 			
 			for(int r = startingRow;r <= (startingRow+BOXHEIGHT)-1;r++) {
 				for(int c = startingCol;c <= (startingCol+BOXWIDTH)-1;c++) {
-					if(board[r][c].equals(num)) {
+					if(board[r][c].equals(value)) {
 						return true;
 					}
 				}
@@ -106,6 +120,10 @@ public class SudokuPuzzle {
 		return "";
 	}
 	
+	public String [][] getBoard() {
+		return board;
+	}
+	
 	private boolean isValidValue(String value) {
 		for(String str : VALIDVALUES) {
 			if(str.equals(value)) return true;
@@ -113,8 +131,21 @@ public class SudokuPuzzle {
 		return false;
 	}
 	
-	private boolean inRange(int row,int col) {
+	public boolean inRange(int row,int col) {
 		return row <= ROWS && col <= COLUMNS && row >= 0 && col >= 0;
+	}
+	
+	public boolean boardFull() {
+		for(int r = 0;r < ROWS;r++) {
+			for(int c = 0;c < COLUMNS;c++) {
+				if(board[r][c].equals("0")) return false;
+			}
+		}
+		return true;
+	}
+	
+	public void makeSlotEmpty(int row,int col) {
+		board[row][col] = "0";
 	}
 	
 	@Override

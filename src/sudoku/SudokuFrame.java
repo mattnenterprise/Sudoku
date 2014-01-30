@@ -66,6 +66,7 @@ public class SudokuFrame extends JFrame {
 	}
 	
 	public void rebuildInterface(SudokuPuzzle puzzle,int fontSize) {
+		new SudokuGenerator().generateRandomSudoku(puzzle.getNumRows(), puzzle.getNumColumns(), puzzle.getBoxWidth(), puzzle.getBoxHeight(),puzzle.getValidValues());
 		sPanel.newSudokuPuzzle(puzzle);
 		sPanel.setFontSize(fontSize);
 		buttonSelectionPanel.removeAll();
