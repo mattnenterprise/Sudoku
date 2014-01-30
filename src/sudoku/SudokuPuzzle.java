@@ -27,6 +27,18 @@ public class SudokuPuzzle {
 		return COLUMNS;
 	}
 	
+	public int getBoxWidth() {
+		return BOXWIDTH;
+	}
+	
+	public int getBoxHeight() {
+		return BOXHEIGHT;
+	}
+	
+	public String [] getValidValues() {
+		return VALIDVALUES;
+	}
+	
 	public void makeMove(int row,int col,String value) {
 		if(inRange(row,col) && isValidValue(value) && isValidMove(row,col,value)) {
 			board[row][col] = value; 
