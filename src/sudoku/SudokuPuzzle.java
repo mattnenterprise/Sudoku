@@ -110,7 +110,7 @@ public class SudokuPuzzle {
 	}
 	
 	public boolean isSlotEmpty(int row,int col) {
-		 return (inRange(row,col) && board[row][col].equals("0"));
+		 return (inRange(row,col) && board[row][col].equals(""));
 	}
 	
 	public String getValue(int row,int col) {
@@ -138,14 +138,14 @@ public class SudokuPuzzle {
 	public boolean boardFull() {
 		for(int r = 0;r < ROWS;r++) {
 			for(int c = 0;c < COLUMNS;c++) {
-				if(board[r][c].equals("0")) return false;
+				if(board[r][c].equals("")) return false;
 			}
 		}
 		return true;
 	}
 	
 	public void makeSlotEmpty(int row,int col) {
-		board[row][col] = "0";
+		board[row][col] = "";
 	}
 	
 	@Override
@@ -163,7 +163,7 @@ public class SudokuPuzzle {
 	private void initializeBoard() {
 		for(int row = 0;row < ROWS;row++) {
 			for(int col = 0;col < COLUMNS;col++) {
-				board[row][col] = "0";
+				board[row][col] = "";
 			}
 		}
 	}
