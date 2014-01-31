@@ -28,17 +28,21 @@ public class SudokuFrame extends JFrame {
 		JMenu file = new JMenu("Game");
 		JMenu newGame = new JMenu("New Game");
 		JMenuItem sixBySixGame = new JMenuItem("6 By 6 Game");
-		sixBySixGame.addActionListener(new NewGameListener(6, 6, 3, 2,new String[] {"1","2","3","4","5","6"},30));
+		sixBySixGame.addActionListener(new NewGameListener(SudokuPuzzleType.SIXBYSIX,30));
 		JMenuItem nineByNineGame = new JMenuItem("9 By 9 Game");
-		nineByNineGame.addActionListener(new NewGameListener(9, 9, 3, 3,new String[] {"1","2","3","4","5","6","7","8","9"},26));
+		nineByNineGame.addActionListener(new NewGameListener(SudokuPuzzleType.NINEBYNINE,26));
 		JMenuItem twelveByTwelveGame = new JMenuItem("12 By 12 Game");
-		twelveByTwelveGame.addActionListener(new NewGameListener(12, 12, 4, 3,new String[] {"1","2","3","4","5","6","7","8","9","A","B","C"},20));
-		JMenuItem sixteenBySizteenGame = new JMenuItem("16 By 16 Game");
-		sixteenBySizteenGame.addActionListener(new NewGameListener(16, 16, 4, 4,new String[] {"1","2","3","4","5","6","7","8","9","A","B","C","D","E","F","G"},16));
+		twelveByTwelveGame.addActionListener(new NewGameListener(SudokuPuzzleType.TWELVEBYTWELVE,20));
+		
+		/*
+		 * need to include this when solving algorithm is improved
+		 JMenuItem sixteenBySizteenGame = new JMenuItem("16 By 16 Game");
+		sixteenBySizteenGame.addActionListener(new NewGameListener(SudokuPuzzleType.SIXTEENBYSIXTEEN,16));
+		*/
 		newGame.add(sixBySixGame);
 		newGame.add(nineByNineGame);
 		newGame.add(twelveByTwelveGame);
-		newGame.add(sixteenBySizteenGame);
+		//newGame.add(sixteenBySizteenGame);
 		file.add(newGame);
 		menuBar.add(file);
 		this.setJMenuBar(menuBar);
@@ -49,28 +53,22 @@ public class SudokuFrame extends JFrame {
 		
 		buttonSelectionPanel = new JPanel();
 		buttonSelectionPanel.setPreferredSize(new Dimension(90,500));
-		
-		String [] numbers = {"1","2","3","4","5","6","7","8","9"};
-		sPanel = new SudokuPanel(new SudokuPuzzle(9,9,3,3,numbers));
-		
-		for(String num : numbers) {
-			JButton b = new JButton(num);
-			b.setPreferredSize(new Dimension(40,40));
-			b.addActionListener(sPanel.new NumActionListener());
-			buttonSelectionPanel.add(b);
-		}
+
+		sPanel = new SudokuPanel();
 		
 		windowPanel.add(sPanel);
 		windowPanel.add(buttonSelectionPanel);
 		this.add(windowPanel);
+		
+		rebuildInterface(SudokuPuzzleType.NINEBYNINE, 26);
 	}
 	
-	public void rebuildInterface(SudokuPuzzle puzzle,int fontSize) {
-		new SudokuGenerator().generateRandomSudoku(puzzle.getNumRows(), puzzle.getNumColumns(), puzzle.getBoxWidth(), puzzle.getBoxHeight(),puzzle.getValidValues());
-		sPanel.newSudokuPuzzle(puzzle);
+	public void rebuildInterface(SudokuPuzzleType puzzleType,int fontSize) {
+		SudokuPuzzle generatedPuzzle = new SudokuGenerator().generateRandomSudoku(puzzleType);
+		sPanel.newSudokuPuzzle(generatedPuzzle);
 		sPanel.setFontSize(fontSize);
 		buttonSelectionPanel.removeAll();
-		for(String value : puzzle.getValidValues()) {
+		for(String value : generatedPuzzle.getValidValues()) {
 			JButton b = new JButton(value);
 			b.setPreferredSize(new Dimension(40,40));
 			b.addActionListener(sPanel.new NumActionListener());
@@ -83,25 +81,17 @@ public class SudokuFrame extends JFrame {
 	
 	private class NewGameListener implements ActionListener {
 
-		private int rows;
-		private int col;
-		private int boxWidth;
-		private int boxHeight;
-		private String [] validValues;
+		private SudokuPuzzleType puzzleType;
 		private int fontSize;
 		
-		public NewGameListener(int rows,int col, int boxWidth,int boxHeight,String [] validValues,int fontSize) {
-			this.rows = rows;
-			this.col = col;
-			this.boxWidth = boxWidth;
-			this.boxHeight = boxHeight;
-			this.validValues = validValues;
+		public NewGameListener(SudokuPuzzleType puzzleType,int fontSize) {
+			this.puzzleType = puzzleType;
 			this.fontSize = fontSize;
 		}
 		
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			rebuildInterface(new SudokuPuzzle(rows, col, boxWidth, boxHeight, validValues),fontSize);
+			rebuildInterface(puzzleType,fontSize);
 		}
 	}
 	

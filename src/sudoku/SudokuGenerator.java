@@ -1,30 +1,39 @@
 package sudoku;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 public class SudokuGenerator {
 
-	public SudokuPuzzle generateRandomSudoku(int rows,int columns,int boxWidth,int boxHeight,String [] validValues) {
-		SudokuPuzzle puzzle = new SudokuPuzzle(rows, columns, boxWidth, boxHeight, validValues);
+	public SudokuPuzzle generateRandomSudoku(SudokuPuzzleType puzzleType) {
+		SudokuPuzzle puzzle = new SudokuPuzzle(puzzleType.getRows(), puzzleType.getColumns(), puzzleType.getBoxWidth(), puzzleType.getBoxHeight(), puzzleType.getValidValues());
+		SudokuPuzzle copy = new SudokuPuzzle(puzzle);
 		
 		Random randomGenerator = new Random();
 		
-		for(int i = 0;i <= 20;i++) {
-			int randomNumber = randomGenerator.nextInt(puzzle.getValidValues().length);
-			int randomCol = randomGenerator.nextInt(puzzle.getNumColumns());
+		List<String> notUsedValidValues =  new ArrayList<String>(Arrays.asList(copy.getValidValues()));
+		for(int r = 0;r < copy.getNumRows();r++) {
+			int randomValue = randomGenerator.nextInt(notUsedValidValues.size());
+			copy.makeMove(r, 0, notUsedValidValues.get(randomValue));
+			notUsedValidValues.remove(randomValue);
+		}
+		
+		//Bottleneck here need to improve this so that way 16x16 puzzles can be generated
+		backtrackSudokuSolver(0, 0, copy);
+		
+		int numberOfValuesToKeep = (int)(0.22222*(copy.getNumRows()*copy.getNumRows()));
+		
+		for(int i = 0;i < numberOfValuesToKeep;) {
 			int randomRow = randomGenerator.nextInt(puzzle.getNumRows());
+			int randomColumn = randomGenerator.nextInt(puzzle.getNumColumns());
 			
-			puzzle.makeMove(randomRow, randomCol, puzzle.getValidValues()[randomNumber]);
-			
-			SudokuPuzzle copy = new SudokuPuzzle(puzzle);
-			backtrackSudokuSolver(0, 0, copy);
-			if(!copy.boardFull()) {
-				puzzle.makeSlotEmpty(randomRow, randomCol);
-				System.out.println("Board not filled");
+			if(puzzle.isSlotEmpty(randomRow, randomColumn)) {
+				puzzle.makeMove(randomRow, randomColumn, copy.getValue(randomRow, randomColumn));
+				i++;
 			}
 		}
-		System.out.println("Puzzle Solved: ");
-		System.out.println(puzzle);
 		
 		return puzzle;
 	}
