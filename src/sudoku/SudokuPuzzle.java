@@ -3,6 +3,8 @@ package sudoku;
 public class SudokuPuzzle {
 
 	protected String [][] board;
+	// Table to determine if a slot is mutable
+	protected boolean [][] mutable;
 	private final int ROWS;
 	private final int COLUMNS;
 	private final int BOXWIDTH;
@@ -15,8 +17,10 @@ public class SudokuPuzzle {
 		this.BOXWIDTH = boxWidth;
 		this.BOXHEIGHT = boxHeight;
 		this.VALIDVALUES = validValues;
-		board = new String [ROWS][COLUMNS];
+		this.board = new String[ROWS][COLUMNS];
+		this.mutable = new boolean[ROWS][COLUMNS];
 		initializeBoard();
+		initializeMutableSlots();
 	}
 	
 	public SudokuPuzzle(SudokuPuzzle puzzle) {
@@ -25,43 +29,50 @@ public class SudokuPuzzle {
 		this.BOXWIDTH = puzzle.BOXWIDTH;
 		this.BOXHEIGHT = puzzle.BOXHEIGHT;
 		this.VALIDVALUES = puzzle.VALIDVALUES;
-		board = new String [ROWS][COLUMNS];
+		this.board = new String[ROWS][COLUMNS];
 		for(int r = 0;r < ROWS;r++) {
 			for(int c = 0;c < COLUMNS;c++) {
 				board[r][c] = puzzle.board[r][c];
 			}
 		}
+		this.mutable = new boolean[ROWS][COLUMNS];
+		for(int r = 0;r < ROWS;r++) {
+			for(int c = 0;c < COLUMNS;c++) {
+				this.mutable[r][c] = puzzle.mutable[r][c];
+			}
+		}
 	}
 	
 	public int getNumRows() {
-		return ROWS;
+		return this.ROWS;
 	}
 	
 	public int getNumColumns() {
-		return COLUMNS;
+		return this.COLUMNS;
 	}
 	
 	public int getBoxWidth() {
-		return BOXWIDTH;
+		return this.BOXWIDTH;
 	}
 	
 	public int getBoxHeight() {
-		return BOXHEIGHT;
+		return this.BOXHEIGHT;
 	}
 	
 	public String [] getValidValues() {
-		return VALIDVALUES;
+		return this.VALIDVALUES;
 	}
 	
-	public void makeMove(int row,int col,String value) {
-		if(isValidValue(value) && isValidMove(row,col,value)) {
-			board[row][col] = value; 
+	public void makeMove(int row,int col,String value,boolean isMutable) {
+		if(this.isValidValue(value) && this.isValidMove(row,col,value) && this.isSlotMutable(row, col)) {
+			this.board[row][col] = value;
+			this.mutable[row][col] = isMutable;
 		}
 	}
 	
 	public boolean isValidMove(int row,int col,String value) {
-		if(inRange(row,col)) {
-			if(!numInCol(col,value) && !numInRow(row,value) && !numInBox(row,col,value)) {
+		if(this.inRange(row,col)) {
+			if(!this.numInCol(col,value) && !this.numInRow(row,value) && !this.numInBox(row,col,value)) {
 				return true;
 			}
 		}
@@ -69,9 +80,9 @@ public class SudokuPuzzle {
 	}
 	
 	public boolean numInCol(int col,String value) {
-		if(col <= COLUMNS) {
-			for(int row=0;row < ROWS;row++) {
-				if(board[row][col].equals(value)) {
+		if(col <= this.COLUMNS) {
+			for(int row=0;row < this.ROWS;row++) {
+				if(this.board[row][col].equals(value)) {
 					return true;
 				}
 			}
@@ -80,9 +91,9 @@ public class SudokuPuzzle {
 	}
 	
 	public boolean numInRow(int row,String value) {
-		if(row <= ROWS) {
-			for(int col=0;col < COLUMNS;col++) {
-				if(board[row][col].equals(value)) {
+		if(row <= this.ROWS) {
+			for(int col=0;col < this.COLUMNS;col++) {
+				if(this.board[row][col].equals(value)) {
 					return true;
 				}
 			}
@@ -91,16 +102,16 @@ public class SudokuPuzzle {
 	}
 	
 	public boolean numInBox(int row,int col,String value) {
-		if(inRange(row, col)) {
-			int boxRow = row / BOXHEIGHT;
-			int boxCol = col / BOXWIDTH;
+		if(this.inRange(row, col)) {
+			int boxRow = row / this.BOXHEIGHT;
+			int boxCol = col / this.BOXWIDTH;
 			
-			int startingRow = (boxRow*BOXHEIGHT);
-			int startingCol = (boxCol*BOXWIDTH);
+			int startingRow = (boxRow*this.BOXHEIGHT);
+			int startingCol = (boxCol*this.BOXWIDTH);
 			
-			for(int r = startingRow;r <= (startingRow+BOXHEIGHT)-1;r++) {
-				for(int c = startingCol;c <= (startingCol+BOXWIDTH)-1;c++) {
-					if(board[r][c].equals(value)) {
+			for(int r = startingRow;r <= (startingRow+this.BOXHEIGHT)-1;r++) {
+				for(int c = startingCol;c <= (startingCol+this.BOXWIDTH)-1;c++) {
+					if(this.board[r][c].equals(value)) {
 						return true;
 					}
 				}
@@ -109,51 +120,55 @@ public class SudokuPuzzle {
 		return false;
 	}
 	
-	public boolean isSlotEmpty(int row,int col) {
-		 return (inRange(row,col) && board[row][col].equals(""));
+	public boolean isSlotAvailable(int row,int col) {
+		 return (this.inRange(row,col) && this.board[row][col].equals("") && this.isSlotMutable(row, col));
+	}
+	
+	public boolean isSlotMutable(int row,int col) {
+		return this.mutable[row][col];
 	}
 	
 	public String getValue(int row,int col) {
-		if(inRange(row,col)) {
-			return board[row][col];
+		if(this.inRange(row,col)) {
+			return this.board[row][col];
 		}
 		return "";
 	}
 	
 	public String [][] getBoard() {
-		return board;
+		return this.board;
 	}
 	
 	private boolean isValidValue(String value) {
-		for(String str : VALIDVALUES) {
+		for(String str : this.VALIDVALUES) {
 			if(str.equals(value)) return true;
 		}
 		return false;
 	}
 	
 	public boolean inRange(int row,int col) {
-		return row <= ROWS && col <= COLUMNS && row >= 0 && col >= 0;
+		return row <= this.ROWS && col <= this.COLUMNS && row >= 0 && col >= 0;
 	}
 	
 	public boolean boardFull() {
-		for(int r = 0;r < ROWS;r++) {
-			for(int c = 0;c < COLUMNS;c++) {
-				if(board[r][c].equals("")) return false;
+		for(int r = 0;r < this.ROWS;r++) {
+			for(int c = 0;c < this.COLUMNS;c++) {
+				if(this.board[r][c].equals("")) return false;
 			}
 		}
 		return true;
 	}
 	
 	public void makeSlotEmpty(int row,int col) {
-		board[row][col] = "";
+		this.board[row][col] = "";
 	}
 	
 	@Override
 	public String toString() {
 		String str = "Game Board:\n";
-		for(int row=0;row < ROWS;row++) {
-			for(int col=0;col < COLUMNS;col++) {
-				str += board[row][col] + " ";
+		for(int row=0;row < this.ROWS;row++) {
+			for(int col=0;col < this.COLUMNS;col++) {
+				str += this.board[row][col] + " ";
 			}
 			str += "\n";
 		}
@@ -161,9 +176,17 @@ public class SudokuPuzzle {
 	}
 	
 	private void initializeBoard() {
-		for(int row = 0;row < ROWS;row++) {
-			for(int col = 0;col < COLUMNS;col++) {
-				board[row][col] = "";
+		for(int row = 0;row < this.ROWS;row++) {
+			for(int col = 0;col < this.COLUMNS;col++) {
+				this.board[row][col] = "";
+			}
+		}
+	}
+	
+	private void initializeMutableSlots() {
+		for(int row = 0;row < this.ROWS;row++) {
+			for(int col = 0;col < this.COLUMNS;col++) {
+				this.mutable[row][col] = true;
 			}
 		}
 	}

@@ -101,7 +101,7 @@ public class SudokuPanel extends JPanel {
 		FontRenderContext fContext = g2d.getFontRenderContext();
 		for(int row=0;row < puzzle.getNumRows();row++) {
 			for(int col=0;col < puzzle.getNumColumns();col++) {
-				if(!puzzle.isSlotEmpty(row, col)) {
+				if(!puzzle.isSlotAvailable(row, col)) {
 					int textWidth = (int) f.getStringBounds(puzzle.getValue(row, col), fContext).getWidth();
 					int textHeight = (int) f.getStringBounds(puzzle.getValue(row, col), fContext).getHeight();
 					g2d.drawString(puzzle.getValue(row, col), (col*slotWidth)+((slotWidth/2)-(textWidth/2)), (row*slotHeight)+((slotHeight/2)+(textHeight/2)));
@@ -116,7 +116,7 @@ public class SudokuPanel extends JPanel {
 	
 	public void messageFromNumActionListener(String buttonValue) {
 		if(currentlySelectedCol != -1 && currentlySelectedRow != -1) {
-			puzzle.makeMove(currentlySelectedRow, currentlySelectedCol, buttonValue);
+			puzzle.makeMove(currentlySelectedRow, currentlySelectedCol, buttonValue, true);
 			repaint();
 		}
 	}

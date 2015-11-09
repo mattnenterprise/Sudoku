@@ -16,7 +16,7 @@ public class SudokuGenerator {
 		List<String> notUsedValidValues =  new ArrayList<String>(Arrays.asList(copy.getValidValues()));
 		for(int r = 0;r < copy.getNumRows();r++) {
 			int randomValue = randomGenerator.nextInt(notUsedValidValues.size());
-			copy.makeMove(r, 0, notUsedValidValues.get(randomValue));
+			copy.makeMove(r, 0, notUsedValidValues.get(randomValue), true);
 			notUsedValidValues.remove(randomValue);
 		}
 		
@@ -29,8 +29,8 @@ public class SudokuGenerator {
 			int randomRow = randomGenerator.nextInt(puzzle.getNumRows());
 			int randomColumn = randomGenerator.nextInt(puzzle.getNumColumns());
 			
-			if(puzzle.isSlotEmpty(randomRow, randomColumn)) {
-				puzzle.makeMove(randomRow, randomColumn, copy.getValue(randomRow, randomColumn));
+			if(puzzle.isSlotAvailable(randomRow, randomColumn)) {
+				puzzle.makeMove(randomRow, randomColumn, copy.getValue(randomRow, randomColumn), false);
 				i++;
 			}
 		}
@@ -54,7 +54,7 @@ public class SudokuGenerator {
 		}
 		
 		//if the current space is empty
-		if(puzzle.isSlotEmpty(r, c)) {
+		if(puzzle.isSlotAvailable(r, c)) {
 			
 			//loop to find the correct value for the space
 			for(int i = 0;i < puzzle.getValidValues().length;i++) {
@@ -63,7 +63,7 @@ public class SudokuGenerator {
 				if(!puzzle.numInRow(r, puzzle.getValidValues()[i]) && !puzzle.numInCol(c,puzzle.getValidValues()[i]) && !puzzle.numInBox(r,c,puzzle.getValidValues()[i])) {
 					
 					//make the move
-					puzzle.makeMove(r, c, puzzle.getValidValues()[i]);
+					puzzle.makeMove(r, c, puzzle.getValidValues()[i], true);
 					
 					//if puzzle solved return true
 					if(puzzle.boardFull()) {
