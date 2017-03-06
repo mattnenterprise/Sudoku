@@ -1,6 +1,6 @@
 package sudoku;
 
-// Jack - comment
+
 /**
 * Represents a Sudoku board
 * Contains get/set for board values and properties, as well as board validation logic
@@ -68,7 +68,7 @@ public class SudokuPuzzle {
 		return this.VALIDVALUES;
 	}
 	
-	// Jack - comment
+
 	/**
 	 * Given the value and it's row and col, make a move if the move is valid
 	 * @param  row  int row of the move
@@ -83,15 +83,12 @@ public class SudokuPuzzle {
 		}
 	}
 	
-	// Jack comment
 	/**
 	 * Check if the move made can be made based on the location on board
 	 * @param  row  int row of the move
 	 * @param  col int column of the move
 	 * @param  value String value of the move
 	 */
-	// Jack - random rant, dont put in report:
-	// shit code.. should be private method
 	public boolean isValidMove(int row,int col,String value) {
 		if(this.inRange(row,col)) {
 			if(!this.numInCol(col,value) && !this.numInRow(row,value) && !this.numInBox(row,col,value)) {
@@ -101,7 +98,6 @@ public class SudokuPuzzle {
 		return false;
 	}
 	
-	// Jack comment
 	/**
 	 * Check if the value already exist in the column
 	 * @param  col int column
@@ -118,8 +114,7 @@ public class SudokuPuzzle {
 		}
 		return false;
 	}
-	
-	// Jack comment
+
 	/**
 	 * Check if the value already exist in the row
 	 * @param  row int row
@@ -136,8 +131,7 @@ public class SudokuPuzzle {
 		}
 		return false;
 	}
-	
-	// Jack comment
+
 	/**
 	 * Check if the value already exist box region of the sudoku board
 	 * @param  row int row
@@ -164,7 +158,6 @@ public class SudokuPuzzle {
 		return false;
 	}
 	
-	// Jack-commetn
 	// Check if the slot is in valid range, empty and muatble
 	/* @param  row int row
 	 * @param  col int column
