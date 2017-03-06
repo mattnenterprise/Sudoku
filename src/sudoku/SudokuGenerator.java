@@ -5,14 +5,22 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
+/**
+* SudokuGenerator is used to generate a solveable Sudoku board of a specific 
+* Sudoku board type
+*/
 public class SudokuGenerator {
 
+	/**
+	 * Generates a valid Sudoku puzzle board based on the given puzzle type
+	 */
 	public SudokuPuzzle generateRandomSudoku(SudokuPuzzleType puzzleType) {
 		SudokuPuzzle puzzle = new SudokuPuzzle(puzzleType.getRows(), puzzleType.getColumns(), puzzleType.getBoxWidth(), puzzleType.getBoxHeight(), puzzleType.getValidValues());
 		SudokuPuzzle copy = new SudokuPuzzle(puzzle);
 		
 		Random randomGenerator = new Random();
 		
+		// Populate the fist colum of the copy board with the valid values of the puzzle type
 		List<String> notUsedValidValues =  new ArrayList<String>(Arrays.asList(copy.getValidValues()));
 		for(int r = 0;r < copy.getNumRows();r++) {
 			int randomValue = randomGenerator.nextInt(notUsedValidValues.size());
@@ -21,10 +29,15 @@ public class SudokuGenerator {
 		}
 		
 		//Bottleneck here need to improve this so that way 16x16 puzzles can be generated
+
+		// Based on the randomized base initial puzzle, solves the Sudoku puzzle using backtrace
 		backtrackSudokuSolver(0, 0, copy);
 		
 		int numberOfValuesToKeep = (int)(0.22222*(copy.getNumRows()*copy.getNumRows()));
 		
+
+		// Using the solved copy puzzle, randomly choose "numberOfValuesToKeep" values and copy it to
+		// the offical puzzle, and set the mutable type of the value to false
 		for(int i = 0;i < numberOfValuesToKeep;) {
 			int randomRow = randomGenerator.nextInt(puzzle.getNumRows());
 			int randomColumn = randomGenerator.nextInt(puzzle.getNumColumns());
@@ -48,12 +61,11 @@ public class SudokuGenerator {
 	 * Responses: Erroneous data 
 	 */
     private boolean backtrackSudokuSolver(int r,int c,SudokuPuzzle puzzle) {
-    	//If the move is not valid return false
+
 		if(!puzzle.inRange(r,c)) {
 			return false;
 		}
 		
-		//if the current space is empty
 		if(puzzle.isSlotAvailable(r, c)) {
 			
 			//loop to find the correct value for the space
