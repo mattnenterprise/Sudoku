@@ -1,5 +1,10 @@
 package sudoku;
 
+// Jack - comment
+/**
+* Represents a Sudoku board
+* Contains get/set for board values and properties, as well as board validation logic
+*/
 public class SudokuPuzzle {
 
 	protected String [][] board;
@@ -63,6 +68,14 @@ public class SudokuPuzzle {
 		return this.VALIDVALUES;
 	}
 	
+	// Jack - comment
+	/**
+	 * Given the value and it's row and col, make a move if the move is valid
+	 * @param  row  int row of the move
+	 * @param  col int column of the move
+	 * @param  value String value of the move
+	 * @param  isMutable boolean value representing if the value is mutable
+	 */
 	public void makeMove(int row,int col,String value,boolean isMutable) {
 		if(this.isValidValue(value) && this.isValidMove(row,col,value) && this.isSlotMutable(row, col)) {
 			this.board[row][col] = value;
@@ -70,6 +83,15 @@ public class SudokuPuzzle {
 		}
 	}
 	
+	// Jack comment
+	/**
+	 * Check if the move made can be made based on the location on board
+	 * @param  row  int row of the move
+	 * @param  col int column of the move
+	 * @param  value String value of the move
+	 */
+	// Jack - random rant, dont put in report:
+	// shit code.. should be private method
 	public boolean isValidMove(int row,int col,String value) {
 		if(this.inRange(row,col)) {
 			if(!this.numInCol(col,value) && !this.numInRow(row,value) && !this.numInBox(row,col,value)) {
@@ -79,6 +101,13 @@ public class SudokuPuzzle {
 		return false;
 	}
 	
+	// Jack comment
+	/**
+	 * Check if the value already exist in the column
+	 * @param  col int column
+	 * @param  value String value of the move
+	 * @return true if value exist, false otherwise
+	 */
 	public boolean numInCol(int col,String value) {
 		if(col <= this.COLUMNS) {
 			for(int row=0;row < this.ROWS;row++) {
@@ -90,6 +119,13 @@ public class SudokuPuzzle {
 		return false;
 	}
 	
+	// Jack comment
+	/**
+	 * Check if the value already exist in the row
+	 * @param  row int row
+	 * @param  value String value of the move
+	 * @return true if value exist, false otherwise
+	 */
 	public boolean numInRow(int row,String value) {
 		if(row <= this.ROWS) {
 			for(int col=0;col < this.COLUMNS;col++) {
@@ -101,6 +137,14 @@ public class SudokuPuzzle {
 		return false;
 	}
 	
+	// Jack comment
+	/**
+	 * Check if the value already exist box region of the sudoku board
+	 * @param  row int row
+	 * @param  col int column
+	 * @param  value String value of the move
+	 * @return true if value exist, false otherwise
+	 */
 	public boolean numInBox(int row,int col,String value) {
 		if(this.inRange(row, col)) {
 			int boxRow = row / this.BOXHEIGHT;
@@ -120,6 +164,12 @@ public class SudokuPuzzle {
 		return false;
 	}
 	
+	// Jack-commetn
+	// Check if the slot is in valid range, empty and muatble
+	/* @param  row int row
+	 * @param  col int column
+	 * @return true if location is available, false otherwise
+	 */
 	public boolean isSlotAvailable(int row,int col) {
 		 return (this.inRange(row,col) && this.board[row][col].equals("") && this.isSlotMutable(row, col));
 	}
